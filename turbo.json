@@ -1,0 +1,22 @@
+{
+  "packages": {
+    "vue3-demo": "packages/frontend/vue3-demo"
+  },
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "build/**"]
+    }
+  },
+  "tasks": {
+    "compile": "tsc",
+    "test": "jest",
+    "publish": "npm publish"
+  },
+  "cache": true,
+  "ignore": ["**/node_modules", "**/.git"],
+  "concurrency": 4,
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
