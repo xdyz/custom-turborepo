@@ -9,4 +9,7 @@ func main() {
 
 	fmt.Printf("%c", b1) // 输出 a 字符 而不是数字 所以fmt 可以用来转换数据
 
+	var b2 byte
+	fmt.Println(b2)
+
 }

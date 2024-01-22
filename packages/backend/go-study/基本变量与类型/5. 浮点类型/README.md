@@ -5,6 +5,8 @@ golang中默认的浮点类型 是float64
 var num = 3.14
 fmt.Printf("%T", num)
 
+默认值为0
+
 
 #### 浮点数类型
 - float32 ( -3.4 * 1e38    --->   3.4 * 1e38)   4字节  3.4 * 1 
