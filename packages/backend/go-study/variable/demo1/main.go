@@ -17,4 +17,16 @@ func main() {
 	fmt.Println(age)
 	fmt.Println(age1)
 	fmt.Println(age2)
+
+	// 变量不可以重复定义，类型与值必须一致
+	// var a int = 12.33  error
+
+	// 多个类型一起定义
+	var (
+		age3 int    = 30
+		name string = "张三"
+	)
+
+	fmt.Println(age3, name)
+
 }
