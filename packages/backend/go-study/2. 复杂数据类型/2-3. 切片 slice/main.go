@@ -64,6 +64,8 @@ func main() {
 		},
 	}
 
+	fmt.Println(m5)
+
 	// 从数组中切出一个切片
 	var a = [5]int{1, 2, 3, 4, 5}
 
