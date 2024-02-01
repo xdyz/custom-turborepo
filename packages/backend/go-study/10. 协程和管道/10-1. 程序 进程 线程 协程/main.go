@@ -11,10 +11,20 @@ func main() {
 	// 启动一个协程
 
 	// 协程的执行是异步的，下面两个将会同时执行
-	go sayHello()
+	// go sayHello()
 
 	// sayMsb 是同步的，这里的代码执行完，主协程main 就结束了，所以 sayHello 剩下的循环将不会在执行
-	sayMsb()
+	// sayMsb()
+
+	// 启动多个协程
+
+	for i := 0; i < 3; i++ {
+		go func(n int) {
+			fmt.Println(n)
+		}(i)
+	}
+
+	time.Sleep(time.Second * 3)
 }
 
 func sayMsb() {
