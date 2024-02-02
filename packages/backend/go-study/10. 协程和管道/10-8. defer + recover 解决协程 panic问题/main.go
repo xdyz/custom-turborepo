@@ -32,12 +32,31 @@ func panicHandler() {
 
 }
 
-func main() {
-	wg.Add(2)
-	go writeIndex()
-	go panicHandler()
-	wg.Wait()
+type D struct {
+	Name string
+}
 
-	fmt.Println("main end")
+func main() {
+
+	var a map[string]int
+	fmt.Println(a == nil)
+
+	var b []int
+	fmt.Println(b == nil)
+	// var c [3]int
+	// fmt.Println(c == nil)
+	// var d D
+	// fmt.Println(d == nil)
+
+	// 结构体声明一个 变量
+	var d D
+	fmt.Println("%v", d)
+
+	// wg.Add(2)
+	// go writeIndex()
+	// go panicHandler()
+	// wg.Wait()
+
+	// fmt.Println("main end")
 
 }
