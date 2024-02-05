@@ -1,0 +1,35 @@
+syntax = "proto3"; // 使用proto3 语法
+
+// option go_package = "path;name"; // path 表示生成的go文件的存放地址，会自动生成目录名，name 表示生成的go文件的包名。中间用 ; 分割
+// name 可以不配置，默认使用文件的名称
+option go_package = "../service"; // . 表示当前目录，service 表示生成的路径 没有配置name 使用文件默认的名称
+
+package service; // 生成的文件中内容 package xxx 为这个，基本与 上面的一致就行
+
+
+// 结构，类似于 go 中的 struct 
+// 与 go 中的结构体一样，定义字段，字段名后面加一个 = 1 表示这个字段的序号，序号从1开始，序号可以不配置，序号不配置时，序号会自动从1开始
+message User {
+  string password = 1; // 定义字段 后面的数字表示字段的序号，而不是赋值
+  string username = 2;
+  // required string email = 3; // required 在 proto3 中已经废弃了
+  optional string email = 3; // 默认所有的字段都是 optional 代表这个字段是可选的，如果前面没有任何关键字默认就是 required 必填的, optional 会将当前 字段变成指针类型
+  repeated string address = 4;
+}
+
+message Roles {
+  repeated string roles = 1;
+}
+
+
+message UserInfo {
+  string name = 1;
+  int32 age = 2;
+  // 定义一个切片类型
+  repeated Roles Roles = 3; // repeated 表示这是一个切片类型 如果类型为一个message 那么 这个类型就变为 指针类型 []*Roles
+}
+
+// 定义服务, 服务内定义方法， rpc 字段 说明这是一个 rpc方法  与 struct 中定义方法一样 不过把 func 换为了 rpc
+service DemoService {
+  rpc SayHello(User) returns (UserInfo) {}
+}
