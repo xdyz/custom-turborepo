@@ -149,7 +149,7 @@ type UserInfo struct {
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Age  int32  `protobuf:"varint,2,opt,name=age,proto3" json:"age,omitempty"`
 	// 定义一个切片类型
-	Roles []*Roles `protobuf:"bytes,3,rep,name=Roles,proto3" json:"Roles,omitempty"` // repeated 表示这是一个切片类型 如果类型为一个message 那么 这个类型就变为 指针类型 []*Roles
+	Roles []*Roles `protobuf:"bytes,3,rep,name=roles,proto3" json:"roles,omitempty"` // repeated 表示这是一个切片类型 如果类型为一个message 那么 这个类型就变为 指针类型 []*Roles
 }
 
 func (x *UserInfo) Reset() {
@@ -205,6 +205,157 @@ func (x *UserInfo) GetRoles() []*Roles {
 	return nil
 }
 
+// 嵌套消息
+type PersonInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Info []*PersonInfo_Person `protobuf:"bytes,1,rep,name=info,proto3" json:"info,omitempty"`
+}
+
+func (x *PersonInfo) Reset() {
+	*x = PersonInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PersonInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PersonInfo) ProtoMessage() {}
+
+func (x *PersonInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PersonInfo.ProtoReflect.Descriptor instead.
+func (*PersonInfo) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PersonInfo) GetInfo() []*PersonInfo_Person {
+	if x != nil {
+		return x.Info
+	}
+	return nil
+}
+
+// 外部使用上面内部定义的
+type PersonMessage struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Info *PersonInfo_Person `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`
+}
+
+func (x *PersonMessage) Reset() {
+	*x = PersonMessage{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PersonMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PersonMessage) ProtoMessage() {}
+
+func (x *PersonMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PersonMessage.ProtoReflect.Descriptor instead.
+func (*PersonMessage) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *PersonMessage) GetInfo() *PersonInfo_Person {
+	if x != nil {
+		return x.Info
+	}
+	return nil
+}
+
+type PersonInfo_Person struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Age  int32  `protobuf:"varint,2,opt,name=age,proto3" json:"age,omitempty"`
+}
+
+func (x *PersonInfo_Person) Reset() {
+	*x = PersonInfo_Person{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PersonInfo_Person) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PersonInfo_Person) ProtoMessage() {}
+
+func (x *PersonInfo_Person) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PersonInfo_Person.ProtoReflect.Descriptor instead.
+func (*PersonInfo_Person) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{3, 0}
+}
+
+func (x *PersonInfo_Person) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *PersonInfo_Person) GetAge() int32 {
+	if x != nil {
+		return x.Age
+	}
+	return 0
+}
+
 var File_user_proto protoreflect.FileDescriptor
 
 var file_user_proto_rawDesc = []byte{
@@ -222,14 +373,25 @@ var file_user_proto_rawDesc = []byte{
 	0x6c, 0x65, 0x73, 0x22, 0x56, 0x0a, 0x08, 0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x12,
 	0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e,
 	0x61, 0x6d, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05,
-	0x52, 0x03, 0x61, 0x67, 0x65, 0x12, 0x24, 0x0a, 0x05, 0x52, 0x6f, 0x6c, 0x65, 0x73, 0x18, 0x03,
+	0x52, 0x03, 0x61, 0x67, 0x65, 0x12, 0x24, 0x0a, 0x05, 0x72, 0x6f, 0x6c, 0x65, 0x73, 0x18, 0x03,
 	0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52,
-	0x6f, 0x6c, 0x65, 0x73, 0x52, 0x05, 0x52, 0x6f, 0x6c, 0x65, 0x73, 0x32, 0x3d, 0x0a, 0x0b, 0x44,
-	0x65, 0x6d, 0x6f, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x2e, 0x0a, 0x08, 0x53, 0x61,
-	0x79, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x12, 0x0d, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
-	0x2e, 0x55, 0x73, 0x65, 0x72, 0x1a, 0x11, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
-	0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x00, 0x42, 0x0c, 0x5a, 0x0a, 0x2e, 0x2e,
-	0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x6c, 0x65, 0x73, 0x52, 0x05, 0x72, 0x6f, 0x6c, 0x65, 0x73, 0x22, 0x6c, 0x0a, 0x0a, 0x50,
+	0x65, 0x72, 0x73, 0x6f, 0x6e, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x2e, 0x0a, 0x04, 0x69, 0x6e, 0x66,
+	0x6f, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x2e, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x49, 0x6e, 0x66, 0x6f, 0x2e, 0x50, 0x65, 0x72,
+	0x73, 0x6f, 0x6e, 0x52, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x1a, 0x2e, 0x0a, 0x06, 0x50, 0x65, 0x72,
+	0x73, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x61, 0x67, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x05, 0x52, 0x03, 0x61, 0x67, 0x65, 0x22, 0x3f, 0x0a, 0x0d, 0x50, 0x65, 0x72,
+	0x73, 0x6f, 0x6e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x2e, 0x0a, 0x04, 0x69, 0x6e,
+	0x66, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x2e, 0x50, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x49, 0x6e, 0x66, 0x6f, 0x2e, 0x50, 0x65,
+	0x72, 0x73, 0x6f, 0x6e, 0x52, 0x04, 0x69, 0x6e, 0x66, 0x6f, 0x32, 0x3d, 0x0a, 0x0b, 0x44, 0x65,
+	0x6d, 0x6f, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x2e, 0x0a, 0x08, 0x53, 0x61, 0x79,
+	0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x12, 0x0d, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
+	0x55, 0x73, 0x65, 0x72, 0x1a, 0x11, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x55,
+	0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x22, 0x00, 0x42, 0x0c, 0x5a, 0x0a, 0x2e, 0x2e, 0x2f,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -244,21 +406,26 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_user_proto_goTypes = []interface{}{
-	(*User)(nil),     // 0: service.User
-	(*Roles)(nil),    // 1: service.Roles
-	(*UserInfo)(nil), // 2: service.UserInfo
+	(*User)(nil),              // 0: service.User
+	(*Roles)(nil),             // 1: service.Roles
+	(*UserInfo)(nil),          // 2: service.UserInfo
+	(*PersonInfo)(nil),        // 3: service.PersonInfo
+	(*PersonMessage)(nil),     // 4: service.PersonMessage
+	(*PersonInfo_Person)(nil), // 5: service.PersonInfo.Person
 }
 var file_user_proto_depIdxs = []int32{
-	1, // 0: service.UserInfo.Roles:type_name -> service.Roles
-	0, // 1: service.DemoService.SayHello:input_type -> service.User
-	2, // 2: service.DemoService.SayHello:output_type -> service.UserInfo
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	1, // 0: service.UserInfo.roles:type_name -> service.Roles
+	5, // 1: service.PersonInfo.info:type_name -> service.PersonInfo.Person
+	5, // 2: service.PersonMessage.info:type_name -> service.PersonInfo.Person
+	0, // 3: service.DemoService.SayHello:input_type -> service.User
+	2, // 4: service.DemoService.SayHello:output_type -> service.UserInfo
+	4, // [4:5] is the sub-list for method output_type
+	3, // [3:4] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_user_proto_init() }
@@ -303,6 +470,42 @@ func file_user_proto_init() {
 				return nil
 			}
 		}
+		file_user_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PersonInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PersonMessage); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PersonInfo_Person); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_user_proto_msgTypes[0].OneofWrappers = []interface{}{}
 	type x struct{}
@@ -311,7 +514,7 @@ func file_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_user_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

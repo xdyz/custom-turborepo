@@ -68,7 +68,7 @@ func main() {
 	fmt.Println(strings.Index("124443123", "123")) // 6 找不到就返回-1
 
 	// 字符串的替换
-	fmt.Println(strings.Replace("124443123", "123", "asa", 0))
+	fmt.Println(strings.Replace("124443123", "123", "asa", 1))
 
 	// 字符串切割
 	fmt.Println(strings.Split("124-443-123", "-"))

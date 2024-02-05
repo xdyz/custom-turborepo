@@ -26,10 +26,28 @@ message UserInfo {
   string name = 1;
   int32 age = 2;
   // 定义一个切片类型
-  repeated Roles Roles = 3; // repeated 表示这是一个切片类型 如果类型为一个message 那么 这个类型就变为 指针类型 []*Roles
+  repeated Roles roles = 3; // repeated 表示这是一个切片类型 如果类型为一个message 那么 这个类型就变为 指针类型 []*Roles
 }
+
+
+// 嵌套消息, 可以嵌套任意多层
+message PersonInfo {
+  message Person {
+    string name = 1;
+    int32 age = 2;
+  }
+  repeated Person info = 1;
+}
+
+// 外部使用上面内部定义的
+message PersonMessage{
+  PersonInfo.Person info = 1;
+}
+
+
 
 // 定义服务, 服务内定义方法， rpc 字段 说明这是一个 rpc方法  与 struct 中定义方法一样 不过把 func 换为了 rpc
 service DemoService {
   rpc SayHello(User) returns (UserInfo) {}
+  rpc GetPerson(User) returns (PersonInfo){}
 }
