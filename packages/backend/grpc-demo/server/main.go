@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"context"
@@ -17,7 +17,20 @@ type Server struct {
 }
 
 func (s *Server) SayHello(ctx context.Context, req *pbService.User) (*pbService.UserInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
+	fmt.Println("Hello")
+	data := &pbService.UserInfo{
+		Name: req.Username,
+		Age:  18,
+		Roles: []*pbService.Roles{
+			&pbService.Roles{
+				Roles: []string{"admin", "user"},
+			},
+		},
+	}
+
+	fmt.Println(data)
+
+	return data, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
 }
 func (s *Server) GetPerson(ctx context.Context, req *pbService.User) (*pbService.PersonInfo, error) {
 
@@ -41,10 +54,10 @@ func (s *Server) GetPerson(ctx context.Context, req *pbService.User) (*pbService
 	return data, status.Errorf(codes.Unimplemented, "method GetPerson not implemented")
 }
 
-func init() {
+func main() {
 
 	// 当前服务的端口号
-	listen, _ := net.Listen("tcp", "localhost:9090")
+	listen, _ := net.Listen("tcp", "127.0.0.1:9090")
 
 	// 1. new 一个grpc服务端
 	rpcServer := grpc.NewServer()
@@ -52,11 +65,15 @@ func init() {
 	// 2. 将服务注册到grpc上 这个服务在 grpc.pb.go中已经实现了，直接拿过来调用即可
 	pbService.RegisterDemoServiceServer(rpcServer, &Server{})
 
+	fmt.Println("Starting")
+
 	// 3. 调用rpcServer.Serve()方法来启动服务
 	err := rpcServer.Serve(listen)
 
 	if err != nil {
 		fmt.Println(err)
+	} else {
+		fmt.Println("服务启动成功")
 	}
 
 }
