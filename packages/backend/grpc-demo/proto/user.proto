@@ -13,8 +13,8 @@ message User {
   string password = 1; // 定义字段 后面的数字表示字段的序号，而不是赋值
   string username = 2;
   // required string email = 3; // required 在 proto3 中已经废弃了
-  optional string email = 3; // 默认所有的字段都是 optional 代表这个字段是可选的，如果前面没有任何关键字默认就是 required 必填的, optional 会将当前 字段变成指针类型
-  repeated string address = 4; //  变为非必选了
+//  optional string email = 3; // 默认所有的字段都是 optional 代表这个字段是可选的，如果前面没有任何关键字默认就是 required 必填的, optional 会将当前 字段变成指针类型
+//  repeated string address = 4; //  变为非必选了
 }
 
 message Roles {

@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	pbService "grpc-demo/service"
 	"net"
 )
@@ -16,10 +14,13 @@ type Server struct {
 	pbService.UnimplementedDemoServiceServer
 }
 
+//status.Errorf(codes.Unimplemented, "method GetPerson not implemented")
+// 上面的错误会直接返回一个错误给到客户端，无论前面返回了什么数据，此时客户端就收不到返回的的数据了，上面一行的代码优先级比较高
+
 func (s *Server) SayHello(ctx context.Context, req *pbService.User) (*pbService.UserInfo, error) {
 	fmt.Println("Hello")
 	data := &pbService.UserInfo{
-		Name: req.Username,
+		Name: req.GetUsername(),
 		Age:  18,
 		Roles: []*pbService.Roles{
 			&pbService.Roles{
@@ -30,7 +31,7 @@ func (s *Server) SayHello(ctx context.Context, req *pbService.User) (*pbService.
 
 	fmt.Println(data)
 
-	return data, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
+	return data, nil
 }
 func (s *Server) GetPerson(ctx context.Context, req *pbService.User) (*pbService.PersonInfo, error) {
 
@@ -51,7 +52,7 @@ func (s *Server) GetPerson(ctx context.Context, req *pbService.User) (*pbService
 		},
 	}
 
-	return data, status.Errorf(codes.Unimplemented, "method GetPerson not implemented")
+	return data, nil
 }
 
 func main() {
