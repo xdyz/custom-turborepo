@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "../service";
+
+package service;
+
+// if you want to use other proto file, you can import it here
+//import "packages/backend/grpc-demo/proto/user.proto";
+import "packages/backend/grpc-demo/proto/user.proto"; // user.proto package name is service
+import "google/protobuf/any.proto";
+
+
+message Product {
+  string name = 1;
+
+  //so , should use package name + message name
+  service.User user = 2;
+
+  // define a Any type, should import google/protobuf/any.proto
+  google.protobuf.Any dto = 3;
+}
+
+service ProductService {
+  rpc GetProduct (service.UserInfo) returns (Product) {}
+}

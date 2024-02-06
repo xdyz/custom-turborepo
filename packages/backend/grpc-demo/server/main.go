@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	pbService "grpc-demo/service"
 	"net"
 )
@@ -55,20 +56,73 @@ func (s *Server) GetPerson(ctx context.Context, req *pbService.User) (*pbService
 	return data, nil
 }
 
+// Auth achieve auth method for verify the token
+func Auth(ctx context.Context) error {
+	mb, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return fmt.Errorf("no metadata")
+	}
+
+	var user string
+	var password string
+
+	if val, ok := mb["user"]; ok {
+		user = val[0]
+	}
+
+	if val, ok := mb["password"]; ok {
+		password = val[0]
+	}
+
+	// if the password and user is not equal , return false
+	if user == "admin" && password == "123456" {
+		return nil
+	}
+
+	return nil
+}
+
+// AuthIntercept define an authentication interceptor method to verify each grpc request
+func AuthIntercept(
+	ctx context.Context,
+	req interface{},
+	info *grpc.UnaryServerInfo,
+	handler grpc.UnaryHandler,
+) (resp interface{}, err error) {
+	// intercept the request method and verify that token
+
+	err = Auth(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
 func main() {
+	// 添加证书
+	// 创建一个自定义证书的服务创建, 需要先用openssl生成证书
+	//creds, err := credentials.NewClientTLSFromFile("cert/server.pem", "cert/server.key")
 
-	// 当前服务的端口号
-	listen, _ := net.Listen("tcp", "127.0.0.1:9090")
-
-	// 1. new 一个grpc服务端
+	// 1. new 一个grpc服务端， 这个服务端是不需要认证的
 	rpcServer := grpc.NewServer()
+
+	// 这是一个需要认证的服务
+	//rpcServer := grpc.NewServer(grpc.Creds(creds))
+
+	// This is a server with interceptor, interceptor for the authentication
+	//rpcServer := grpc.NewServer(grpc.Creds(creds), grpc.UnaryInterceptor(AuthIntercept))
 
 	// 2. 将服务注册到grpc上 这个服务在 grpc.pb.go中已经实现了，直接拿过来调用即可
 	pbService.RegisterDemoServiceServer(rpcServer, &Server{})
 
 	fmt.Println("Starting")
 
-	// 3. 调用rpcServer.Serve()方法来启动服务
+	// 3. 建立一个当前服务的端口号
+	listen, _ := net.Listen("tcp", "127.0.0.1:9090")
+
+	// 4. 调用rpcServer.Serve()方法来启动服务
 	err := rpcServer.Serve(listen)
 
 	if err != nil {

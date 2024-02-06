@@ -9,7 +9,16 @@ import (
 )
 
 func main() {
-	// 建立连接，连接到服务端，并使用 insecure.NewCredentials() 函数创建一个空的客户端证书。就是不进行加密设置
+
+	// client also needs cart, otherwise will report an error
+	//file, err := credentials.NewClientTLSFromFile("client/keys/mszlu.pem", "*.mszlu.com")
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	// read the car file
+	//conn, err := grpc.Dial("127.0.0.1:9090", grpc.WithTransportCredentials(file))
+
+	// connect to the server, and use insecure.NewCredentials() method to create an empty Certificate
 	conn, err := grpc.Dial("127.0.0.1:9090", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		fmt.Println(err)
@@ -22,7 +31,7 @@ func main() {
 		}
 	}(conn)
 
-	// 连接到grpc的 client中
+	// connect to the grpc client
 	client := pbService.NewDemoServiceClient(conn)
 
 	fmt.Println(client)
