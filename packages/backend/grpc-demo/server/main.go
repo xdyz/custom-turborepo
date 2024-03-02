@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	pbService "grpc-demo/service"
+	"io"
 	"net"
 )
 
@@ -54,6 +55,26 @@ func (s *Server) GetPerson(ctx context.Context, req *pbService.User) (*pbService
 	}
 
 	return data, nil
+}
+
+// UpdateProductClient server implement the stream key word  method
+func (s *Server) UpdateProductClient(stream pbService.ProductService_UpdateProductClientServer) error {
+	// stream may be will always from the client to the server, so we need to get it by [for{}]
+	for {
+		recv, err := stream.Recv()
+		if err != nil {
+			// when we receive the EOF, it means stream is over
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+
+		err1 := stream.SendAndClose(recv)
+		if err1 != nil {
+			return err1
+		}
+	}
 }
 
 // Auth achieve auth method for verify the token

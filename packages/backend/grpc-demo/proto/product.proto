@@ -22,4 +22,13 @@ message Product {
 
 service ProductService {
   rpc GetProduct (service.UserInfo) returns (Product) {}
+
+  // 客户端流 只有传进来的参数是 带 stream 关键字
+  rpc UpdateProductClient(stream Product) returns (Product){}
+
+  // 服务端流 只有返回的参数是 带 stream 关键字
+  rpc UpdateProductServer(Product) returns (stream Product) {}
+
+  // 双向流 两边都是带关键子的
+  rpc UpdateProductBoth(stream Product) returns (stream Product) {}
 }
