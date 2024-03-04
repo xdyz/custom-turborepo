@@ -29,6 +29,15 @@ func main() {
 		panic(err)
 	}
 
+	// create the exchange
+	if err := client.CreateExchange("my-exchange", "topic"); err != nil {
+		panic(err)
+	}
+
+	if err := client.CreateBinding("my-queue", "my.queue.exchange", "my-exchange"); err != nil {
+		panic(err)
+	}
+
 	fmt.Print(conn)
 
 	time.Sleep(10 * time.Second)

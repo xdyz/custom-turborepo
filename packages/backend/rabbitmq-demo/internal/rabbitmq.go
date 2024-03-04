@@ -59,3 +59,24 @@ func (r RabbitmqClient) CreateQueue(queueName string, druable bool, autoDelete b
 
 	return err
 }
+
+func (r RabbitmqClient) CreateExchange(exchangeName string, kind string) error {
+	return r.ch.ExchangeDeclare(
+		exchangeName,
+		kind,
+		true,  // durable
+		false, // autoDelete
+		false, // internal
+		false, // noWait
+		nil,   // arguments
+	)
+}
+
+func (r RabbitmqClient) CreateBinding(queueName, routerKey, exchange string) error {
+	return r.ch.QueueBind(
+		queueName, // 队列名称
+		routerKey, // 路由key值
+		exchange,  // 交换机名称
+		false,
+		nil)
+}
