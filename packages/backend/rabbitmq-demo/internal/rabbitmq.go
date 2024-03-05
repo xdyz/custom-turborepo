@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"context"
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -60,6 +61,7 @@ func (r RabbitmqClient) CreateQueue(queueName string, druable bool, autoDelete b
 	return err
 }
 
+// CreateExchange create an exchange , set the echanageName and kind ( or type : topic, fanout, ...etc)
 func (r RabbitmqClient) CreateExchange(exchangeName string, kind string) error {
 	return r.ch.ExchangeDeclare(
 		exchangeName,
@@ -72,6 +74,7 @@ func (r RabbitmqClient) CreateExchange(exchangeName string, kind string) error {
 	)
 }
 
+// CreateBinding let queue bind to the exchange, use routerKey
 func (r RabbitmqClient) CreateBinding(queueName, routerKey, exchange string) error {
 	return r.ch.QueueBind(
 		queueName, // 队列名称
@@ -79,4 +82,17 @@ func (r RabbitmqClient) CreateBinding(queueName, routerKey, exchange string) err
 		exchange,  // 交换机名称
 		false,
 		nil)
+}
+
+// Publish 将消息传递给交换机，所以需要交换机的名称，路由键，因为交换机需要知道，你要给哪个队列发送消息
+// Publish send message to the exchange, so we need send the exchange name, routerKey, because, exchanges should know, what queue you want to send.
+func (r RabbitmqClient) Publish(ctx context.Context, exchangeName string, routerKey string, option amqp.Publishing) error {
+	return r.ch.PublishWithContext(
+		ctx,          // 传递的上下文
+		exchangeName, // 交换机名称
+		routerKey,    // 路由键，告诉交换机将消息传递给哪些队列中去
+		true,
+		false,
+		option, // 需要发送的消息内容
+	)
 }
