@@ -84,9 +84,9 @@ func (r RabbitmqClient) CreateBinding(queueName, routerKey, exchange string) err
 		nil)
 }
 
-// Publish 将消息传递给交换机，所以需要交换机的名称，路由键，因为交换机需要知道，你要给哪个队列发送消息
-// Publish send message to the exchange, so we need send the exchange name, routerKey, because, exchanges should know, what queue you want to send.
-func (r RabbitmqClient) Publish(ctx context.Context, exchangeName string, routerKey string, option amqp.Publishing) error {
+// Send Publish 将消息传递给交换机，所以需要交换机的名称，路由键，因为交换机需要知道，你要给哪个队列发送消息
+// Send message to the exchange, so we need send the exchange name, routerKey, because, exchanges should know, what queue you want to send.
+func (r RabbitmqClient) Send(ctx context.Context, exchangeName string, routerKey string, option amqp.Publishing) error {
 	return r.ch.PublishWithContext(
 		ctx,          // 传递的上下文
 		exchangeName, // 交换机名称
