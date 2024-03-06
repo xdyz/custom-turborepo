@@ -96,3 +96,37 @@ func (r RabbitmqClient) Send(ctx context.Context, exchangeName string, routerKey
 		option, // 需要发送的消息内容
 	)
 }
+
+// Consume 创建消费者，获取到一个只能接收消息的通道
+
+// <-chan amqp.Delivery 表示这个函数返回一个通道，<- 表示这个通道只能接收消息，不能给这个通道发送消息， 且通道的消息数据类型为 amqp.Delivery
+
+// chan <- message 则表示这个函数返回一个通道，<- 表示这个通道只能发送消息，不能接收消息，且通道的消息数据类型为 message
+
+func (r RabbitmqClient) Consume(queueName, consumeName string, autoAck bool, table amqp.Table) (<-chan amqp.Delivery, error) {
+
+	// 不带上下文的消费者，就会一直存在，上下文消失不会影响消费者
+	return r.ch.Consume(
+		queueName,   // 队列名称
+		consumeName, // 消费者名称
+		autoAck,     // 是否自动应答, 就是收到消息后，自动告诉rabbitmq 消息已经被成功消费了，从队列中删除。 一般不需要，都是后续的业务逻辑处理成功后，手动ACK
+		false,       // 是否排他，这个消费者作为 这个队列的唯一消费者，其余的消费者不可以在这个队列进行消费
+		false,       // 如果为true 则消费者不会接收通过同一连接发送的消息。这对于避免消费者接收其自己发送的消息非常有用。
+		false,       // 是否阻塞，如果false 消费者会立马消费消息，不等待服务器的响应
+		table,
+	)
+
+	// 带上下文的 消费者，当上下文消失嘞，这个消费者也就被删除了
+	//return r.ch.ConsumeWithContext(
+	//	ctx,
+	//	queueName,   // 队列名称
+	//	consumeName, // 消费者名称
+	//	autoAck,     // 是否自动应答, 就是收到消息后，自动告诉rabbitmq 消息已经被成功消费了，从队列中删除。 一般不需要，都是后续的业务逻辑处理成功后，手动ACK
+	//	false,       // 是否排他，这个消费者作为 这个队列的唯一消费者，其余的消费者不可以在这个队列进行消费
+	//	false,       // 如果为true 则消费者不会接收通过同一连接发送的消息。这对于避免消费者接收其自己发送的消息非常有用。
+	//	false,       // 是否阻塞，如果false 消费者会立马消费消息，不等待服务器的响应
+	//	table,
+	//)
+
+	//return nil, nil
+}
