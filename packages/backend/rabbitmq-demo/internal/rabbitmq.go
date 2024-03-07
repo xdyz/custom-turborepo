@@ -47,9 +47,10 @@ func (r RabbitmqClient) Close() error {
 }
 
 // CreateQueue  create queue by channel
-func (r RabbitmqClient) CreateQueue(queueName string, druable bool, autoDelete bool) error {
+func (r RabbitmqClient) CreateQueue(queueName string, druable bool, autoDelete bool) (amqp.Queue, error) {
 	// create queue by channel
-	_, err := r.ch.QueueDeclare(
+	// 如果创建的时候，没有传递队列名称，rabbitmq 会自动创建一个队列名称
+	q, err := r.ch.QueueDeclare(
 		queueName,  // 队列的名称
 		druable,    // 队列是否持久化
 		autoDelete, // 是否自动删除，例如 为true, rabbitmq 重启后，队列被自动删除
@@ -58,13 +59,29 @@ func (r RabbitmqClient) CreateQueue(queueName string, druable bool, autoDelete b
 		nil,        // 其他参数
 	)
 
-	return err
+	/**
+	 * amqp.Queue{}
+	 * @param Name string 队列名称
+	 * @param Messages int 未等待确认的消息数量
+	 * @param Consumers int 消费者数量
+	 */
+	if err != nil {
+		return amqp.Queue{}, err
+	}
+
+	return q, nil
 }
 
 // CreateExchange create an exchange , set the echanageName and kind ( or type : topic, fanout, ...etc)
 func (r RabbitmqClient) CreateExchange(exchangeName string, kind string) error {
 	return r.ch.ExchangeDeclare(
 		exchangeName,
+		/** 交换机类型
+		 * fanout: 扇形、广播给挂在到这个交换机上的所有队列，此时会忽略，所有队列都会收到同一条消息
+		 * topic: 通过路由匹配到符合routerKey的队列，给其传递消息 会用到 # 号  *号等
+		 * direct: 通过路由找到到与routerKey一致的队列，给其传递消息
+		 * headers: 通过headers匹配到符合headers的队列，给其传递消息
+		 */
 		kind,
 		true,  // durable
 		false, // autoDelete

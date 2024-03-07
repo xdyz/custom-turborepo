@@ -48,24 +48,44 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	// 发送消息  持久化的消息
-	if err := client.Send(ctx, "my-exchange", "my.queue.exchange", amqp.Publishing{
-		ContentType:  "text/plain",
-		DeliveryMode: amqp.Persistent, // 持久化的消息，没有消费就会一直存在，前提，队列也是持久化的
-		Body:         []byte("first message"),
-	}); err != nil {
-		panic(err)
-	}
+	//// 发送消息  持久化的消息
+	//if err := client.Send(ctx, "my-exchange", "my.queue.exchange", amqp.Publishing{
+	//	ContentType:  "text/plain",
+	//	DeliveryMode: amqp.Persistent, // 持久化的消息，没有消费就会一直存在，前提，队列也是持久化的
+	//	Body:         []byte("first message"),
+	//}); err != nil {
+	//	panic(err)
+	//}
+	//
+	//// 发送消息  短暂的消息， 重启会消失
+	//if err := client.Send(ctx, "my-exchange", "my.queue.exchange1", amqp.Publishing{
+	//	ContentType:  "text/plain",
+	//	DeliveryMode: amqp.Transient, // 重启rabbitmq 后就丢失了
+	//	Body:         []byte("second message"),
+	//}); err != nil {
+	//	panic(err)
+	//}
 
-	// 发送消息  短暂的消息， 重启会消失
-	if err := client.Send(ctx, "my-exchange", "my.queue.exchange1", amqp.Publishing{
-		ContentType:  "text/plain",
-		DeliveryMode: amqp.Transient, // 重启rabbitmq 后就丢失了
-		Body:         []byte("second message"),
-	}); err != nil {
-		panic(err)
-	}
+	//  发送10条消息， 启动两个消费者 看消费的结果
+	for i := 0; i < 10; i++ {
+		// 发送消息  持久化的消息
+		if err := client.Send(ctx, "my-exchange", "my.queue.exchange", amqp.Publishing{
+			ContentType:  "text/plain",
+			DeliveryMode: amqp.Persistent, // 持久化的消息，没有消费就会一直存在，前提，队列也是持久化的
+			Body:         []byte("first message"),
+		}); err != nil {
+			panic(err)
+		}
 
+		// 发送消息  短暂的消息， 重启会消失
+		if err := client.Send(ctx, "my-exchange", "my.queue.exchange1", amqp.Publishing{
+			ContentType:  "text/plain",
+			DeliveryMode: amqp.Transient, // 重启rabbitmq 后就丢失了
+			Body:         []byte("second message"),
+		}); err != nil {
+			panic(err)
+		}
+	}
 	fmt.Print(conn)
 
 	time.Sleep(30 * time.Second)
